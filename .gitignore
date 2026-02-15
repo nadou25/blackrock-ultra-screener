@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════
+#  🔒 SÉCURITÉ — Ne JAMAIS committer ces fichiers
+# ═══════════════════════════════════════════════
+
+# ── Environnement Python ──
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# ── Tokens & Secrets ──
+.env
+telegram_config.json
+
+# ── Modèles ML/PPO (volumineux) ──
+*.pkl
+*.zip
+ppo_v5_stats.json
+
+# ── Logs ──
+*.log
+
+# ── Cache & Données temp ──
+catboost_info/
+*.db
+*.sqlite
+
+# ── Rapports générés ──
+*.xlsx
+*.pdf
+
+# ── OS ──
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# ── IDE ──
+.vscode/
+.idea/
