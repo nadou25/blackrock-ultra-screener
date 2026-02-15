@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blackrock-ultra-screener"
+version = "10.0.0"
+description = "🏦 Screener quantitatif multi-factoriel avec ML (13 modèles), PPO et Bot Telegram"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "nadou25"}
+]
+keywords = [
+    "trading", "screener", "quantitative", "machine-learning",
+    "reinforcement-learning", "ppo", "stocks", "finance",
+    "blackrock", "risk-management", "telegram-bot"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "pandas>=1.5.0",
+    "numpy>=1.23.0",
+    "yfinance>=0.2.18",
+    "scikit-learn>=1.2.0",
+    "xgboost>=1.7.0",
+    "lightgbm>=3.3.0",
+    "catboost>=1.1.0",
+    "stable-baselines3>=2.0.0",
+    "gymnasium>=0.28.0",
+    "torch>=2.0.0",
+    "openpyxl>=3.1.0",
+    "python-telegram-bot==20.7",
+    "schedule>=1.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "flake8>=6.0.0",
+    "black>=23.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/nadou25/blackrock-ultra-screener"
+Repository = "https://github.com/nadou25/blackrock-ultra-screener"
+Issues = "https://github.com/nadou25/blackrock-ultra-screener/issues"
+
+[tool.black]
+line-length = 120
+target-version = ['py310', 'py311', 'py312']
+
+[tool.flake8]
+max-line-length = 120
+max-complexity = 15
+exclude = [".venv", "__pycache__", "catboost_info"]
