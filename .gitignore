@@ -37,3 +37,13 @@ desktop.ini
 # ── IDE ──
 .vscode/
 .idea/
+
+# ── Docker ──
+logs/
+models/
+output/
+
+# ── Tests ──
+.pytest_cache/
+htmlcov/
+.coverage

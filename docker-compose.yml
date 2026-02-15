@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Bot Telegram (24/7)
+  bot:
+    build: .
+    container_name: screener-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./models:/app/models
+    command: python telegram_bot.py
+
+  # Screener one-shot (pour analyses manuelles)
+  screener:
+    build: .
+    container_name: screener-analysis
+    profiles:
+      - manual
+    env_file:
+      - .env
+    volumes:
+      - ./output:/app/output
+    command: python -c "
+      from stock_screener_ultra_v10 import Config, MoteurAnalyse;
+      config = Config.charger();
+      config.appliquer_profil('INVESTISSEUR_1AN');
+      moteur = MoteurAnalyse(config);
+      results = moteur.executer();
+      print('\\n🏆 TOP 10 INVESTISSEUR:');
+      for r in results[:10]:
+          print(f\"{r['symbole']:8} Score: {r['score_final']:.0f} - {r['decision']}\")
+      "
