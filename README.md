@@ -24,11 +24,23 @@
 - [Installation](#-installation)
 - [Configuration](#-configuration)
 - [Utilisation](#-utilisation)
+- [Dashboard Web](#-dashboard-web)
+- [Backtesting](#-backtesting)
 - [Profils de Trading](#-profils-de-trading)
 - [Bot Telegram](#-bot-telegram)
 - [Gestion des Risques](#-gestion-des-risques)
-- [Screenshots](#-screenshots)
+- [Docker](#-docker)
 - [Avertissement](#-avertissement)
+
+---
+
+## 🆕 Nouveautés v10.1
+
+- 🌐 **Dashboard Web Streamlit** — Interface interactive complète
+- 📉 **Backtesting Engine** — Testez vos stratégies historiquement
+- 🐳 **Docker Support** — Déploiement simplifié
+- 🧪 **Tests Unitaires** — CI/CD avec GitHub Actions
+- 📦 **Packaging Moderne** — pyproject.toml, setup.py
 
 ---
 
@@ -262,6 +274,70 @@ for r in results[:10]:
 
 ---
 
+## 🌐 Dashboard Web
+
+Interface web interactive avec Streamlit pour visualiser et analyser les résultats.
+
+### Lancer le Dashboard
+
+```bash
+streamlit run dashboard.py
+```
+
+Ouvrez http://localhost:8501 dans votre navigateur.
+
+### Fonctionnalités du Dashboard
+
+| Onglet | Description |
+|--------|-------------|
+| 📊 Résultats | Tableau des titres avec scores et signaux |
+| 📈 Analyse Détaillée | Graphiques candlestick, indicateurs techniques |
+| 🛡️ Risk Management | Calculateur Kelly, VaR, position sizing |
+| 📉 Backtesting | Testez les stratégies sur données historiques |
+
+---
+
+## 📉 Backtesting
+
+Module de backtesting pour tester les stratégies sur données historiques.
+
+### Usage CLI
+
+```bash
+# Backtest SMA Crossover sur AAPL (2 ans)
+python backtester.py AAPL -s sma_crossover -p 2y
+
+# Backtest RSI sur SPY (5 ans) avec $50k
+python backtester.py SPY -s rsi_oversold -p 5y -c 50000
+```
+
+### Usage Python
+
+```python
+from backtester import Backtester
+
+bt = Backtester(initial_capital=10000)
+results = bt.run("NVDA", strategy="momentum", period="2y")
+print(bt.report())
+
+# Accès aux métriques
+print(f"Sharpe: {results.sharpe_ratio:.2f}")
+print(f"Max DD: {results.max_drawdown_pct:.1f}%")
+```
+
+### Stratégies Disponibles
+
+| Stratégie | Description |
+|-----------|-------------|
+| `buy_hold` | Buy & Hold simple |
+| `sma_crossover` | Croisement SMA 20/50 |
+| `rsi_oversold` | Achat RSI < 30, vente RSI > 70 |
+| `macd_signal` | Signal MACD |
+| `momentum` | ROC 20 jours positif |
+| `mean_reversion` | Bollinger Bands |
+
+---
+
 ## 📈 Profils de Trading
 
 10 profils prédéfinis optimisés pour différents styles :
@@ -385,6 +461,44 @@ blackrock-ultra-screener/
 ├── .env.example                   # Template variables d'environnement
 ├── .gitignore                     # Exclusions Git
 └── README.md                      # Ce fichier
+```
+
+---
+
+## 🐳 Docker
+
+Déployez facilement avec Docker.
+
+### Build et Run
+
+```bash
+# Build l'image
+docker build -t screener .
+
+# Lancer le bot Telegram
+docker run -d --name screener-bot \
+  -e TELEGRAM_BOT_TOKEN=votre_token \
+  screener
+
+# Lancer une analyse one-shot
+docker run --rm screener python -c "
+from stock_screener_ultra_v10 import Config, MoteurAnalyse
+config = Config.charger()
+config.appliquer_profil('INVESTISSEUR_1AN')
+moteur = MoteurAnalyse(config)
+for r in moteur.executer()[:10]:
+    print(f\"{r['symbole']} - Score: {r['score_final']:.0f}\")
+"
+```
+
+### Docker Compose
+
+```bash
+# Bot 24/7
+docker-compose up -d bot
+
+# Analyse manuelle
+docker-compose run --rm screener
 ```
 
 ---
