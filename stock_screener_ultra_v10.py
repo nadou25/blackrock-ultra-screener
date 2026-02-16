@@ -2490,7 +2490,7 @@ class PredicteurML:
                         cal.fit(X_val, y_val)  # calibrer sur val, pas test
                         self.calibrators[name] = cal
                 except Exception as e:
-                    lgr.debug(f"  Calibration {name} skip: {e}")
+                    logger.debug(f"  Calibration {name} skip: {e}")
             except Exception as e:
                 logger.debug(f"  ❌ {name}: {e}")
 
@@ -6472,7 +6472,6 @@ class InterfaceScreener:
 
         # Sync moteur + PPO
         self.moteur.config = cfg
-        global ppo_system
         if ppo_system:
             ppo_system.config = cfg
 
@@ -6496,7 +6495,6 @@ class InterfaceScreener:
         self.config = Config()  # Défauts
         self.moteur.config = self.config
         # Synchroniser immédiatement le système PPO
-        global ppo_system
         if ppo_system is not None:
             ppo_system.config = self.config
         self._refresh_param_widgets()
@@ -6998,7 +6996,6 @@ class InterfaceScreener:
             logging.getLogger('BlackRockScreener').debug(f"Sync GUI params: {e}")
         self.moteur.config = c
         self.moteur.risk_manager.config = c
-        global ppo_system
         if ppo_system:
             ppo_system.config = c
 
@@ -7395,7 +7392,6 @@ class InterfaceScreener:
             return
         self.running = True
         def run():
-            global ppo_system
             # Sync TOUS les paramètres GUI → config → PPO
             self._sync_config_from_gui()
             c = self.config
