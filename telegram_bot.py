@@ -450,9 +450,14 @@ async def cmd_rapport(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("⏳ Analyse en cours... (2-5 min)")
     try:
         messages = generate_full_report()
-        for msg in messages:
+        for i, msg in enumerate(messages):
             await update.message.reply_text(msg, parse_mode='HTML')
+            # Respect Telegram rate limits: 1 message/second per user
+            if i < len(messages) - 1:
+                await asyncio.sleep(1.2)
     except Exception as e:
+        log.error(f"❌ Erreur cmd_rapport: {e}")
+        log.error(f"📝 Détails: {traceback.format_exc()}")
         await update.message.reply_text(f"❌ Erreur: {e}")
 
 
@@ -478,9 +483,14 @@ async def cmd_single_horizon(update: Update, context: ContextTypes.DEFAULT_TYPE,
             await update.message.reply_text(msg, parse_mode='HTML')
         else:
             parts = [msg[i:i+4000] for i in range(0, len(msg), 4000)]
-            for p in parts:
+            for i, p in enumerate(parts):
                 await update.message.reply_text(p, parse_mode='HTML')
+                # Respect Telegram rate limits: 1 message/second per user
+                if i < len(parts) - 1:
+                    await asyncio.sleep(1.2)
     except Exception as e:
+        log.error(f"❌ Erreur cmd_single_horizon: {e}")
+        log.error(f"📝 Détails: {traceback.format_exc()}")
         await update.message.reply_text(f"❌ Erreur: {e}")
 
 
@@ -599,12 +609,16 @@ async def envoyer_rapport_planifie(app: Application):
 
         for cid in chat_ids:
             try:
-                for msg in messages:
+                for i, msg in enumerate(messages):
                     await app.bot.send_message(
                         chat_id=cid, text=msg, parse_mode='HTML')
+                    # Respect Telegram rate limits: 1 message/second per user
+                    if i < len(messages) - 1:
+                        await asyncio.sleep(1.2)
                 log.info(f"   ✅ Envoyé à {cid}")
             except Exception as e:
                 log.error(f"   ❌ Erreur envoi à {cid}: {e}")
+                log.error(f"   📝 Détails: {traceback.format_exc()}")
 
         # Sauver la date du dernier rapport
         cfg["dernier_rapport"] = datetime.now().strftime('%d/%m/%Y %H:%M')
@@ -612,6 +626,7 @@ async def envoyer_rapport_planifie(app: Application):
 
     except Exception as e:
         log.error(f"❌ Erreur génération rapport: {e}")
+        log.error(f"📝 Détails: {traceback.format_exc()}")
         for cid in chat_ids:
             try:
                 await app.bot.send_message(
@@ -643,23 +658,31 @@ async def scheduler_loop(app: Application):
                     chat_ids = cfg.get("chat_ids", [])
 
                     # Notifier le début
-                    for cid in chat_ids:
+                    for i, cid in enumerate(chat_ids):
                         try:
                             await app.bot.send_message(
                                 chat_id=cid,
                                 text="🔄 <b>Re-entraînement ML + PPO en cours...</b>\n⏳ ~15-45 min",
                                 parse_mode='HTML')
-                        except: pass
+                            # Respect Telegram rate limits between users
+                            if i < len(chat_ids) - 1:
+                                await asyncio.sleep(0.1)
+                        except Exception as e:
+                            log.error(f"❌ Erreur notification début retrain à {cid}: {e}")
 
                     # Lancer dans un executor (lourd, bloquant)
                     summary = await asyncio.get_event_loop().run_in_executor(None, run_retrain)
 
                     # Notifier la fin
-                    for cid in chat_ids:
+                    for i, cid in enumerate(chat_ids):
                         try:
                             await app.bot.send_message(
                                 chat_id=cid, text=summary, parse_mode='HTML')
-                        except: pass
+                            # Respect Telegram rate limits between users
+                            if i < len(chat_ids) - 1:
+                                await asyncio.sleep(0.1)
+                        except Exception as e:
+                            log.error(f"❌ Erreur notification fin retrain à {cid}: {e}")
 
                     log.info("🔄 Re-entraînement terminé")
 
