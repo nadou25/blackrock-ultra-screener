@@ -383,6 +383,8 @@ Le système ajuste **automatiquement** tous les calculs (ML, PPO, indicateurs, S
 ## 🤖 Bot Telegram
 
 > **📬 RAPPORTS AUTOMATIQUES QUOTIDIENS** : Le bot envoie automatiquement un rapport complet chaque jour à 8h00 (configurable). Il suffit de lancer le bot une fois et de s'abonner avec `/start` !
+>
+> 📖 **[Guide Complet des Rapports Quotidiens](GUIDE_RAPPORTS_QUOTIDIENS.md)** — Configuration, dépannage, exemples
 
 ### Configuration
 
