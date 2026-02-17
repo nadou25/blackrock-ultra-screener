@@ -461,8 +461,7 @@ async def cmd_rapport(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if i < len(messages) - 1:
                 await asyncio.sleep(RATE_LIMIT_DELAY_SAME_USER)
     except Exception as e:
-        log.error(f"❌ Erreur cmd_rapport: {e}")
-        log.error(f"📝 Détails: {traceback.format_exc()}")
+        log.error(f"❌ Erreur cmd_rapport: {e}", exc_info=True)
         await update.message.reply_text(f"❌ Erreur: {e}")
 
 
@@ -494,8 +493,7 @@ async def cmd_single_horizon(update: Update, context: ContextTypes.DEFAULT_TYPE,
                 if i < len(parts) - 1:
                     await asyncio.sleep(RATE_LIMIT_DELAY_SAME_USER)
     except Exception as e:
-        log.error(f"❌ Erreur cmd_single_horizon: {e}")
-        log.error(f"📝 Détails: {traceback.format_exc()}")
+        log.error(f"❌ Erreur cmd_single_horizon: {e}", exc_info=True)
         await update.message.reply_text(f"❌ Erreur: {e}")
 
 
@@ -622,16 +620,14 @@ async def envoyer_rapport_planifie(app: Application):
                         await asyncio.sleep(RATE_LIMIT_DELAY_SAME_USER)
                 log.info(f"   ✅ Envoyé à {cid}")
             except Exception as e:
-                log.error(f"   ❌ Erreur envoi à {cid}: {e}")
-                log.error(f"   📝 Détails: {traceback.format_exc()}")
+                log.error(f"   ❌ Erreur envoi à {cid}: {e}", exc_info=True)
 
         # Sauver la date du dernier rapport
         cfg["dernier_rapport"] = datetime.now().strftime('%d/%m/%Y %H:%M')
         sauver_config(cfg)
 
     except Exception as e:
-        log.error(f"❌ Erreur génération rapport: {e}")
-        log.error(f"📝 Détails: {traceback.format_exc()}")
+        log.error(f"❌ Erreur génération rapport: {e}", exc_info=True)
         for cid in chat_ids:
             try:
                 await app.bot.send_message(

@@ -86,7 +86,7 @@ class TestTelegramRateLimits:
         
         # Vérifier la présence de logging d'erreurs
         assert 'log.error' in content, "Le code doit contenir du logging d'erreurs"
-        assert 'traceback.format_exc()' in content, "Le code doit logger les stack traces"
+        assert 'exc_info=True' in content, "Le code doit utiliser exc_info=True pour logger les stack traces"
 
 
 if __name__ == "__main__":
