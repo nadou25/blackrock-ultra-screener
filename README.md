@@ -443,6 +443,13 @@ Chaque signal inclut : Score, Ratio R:R, EV%, Stop-Loss, Take-Profit, Kelly%, Ri
 **Q: Que se passe-t-il si le bot est arrêté ?**  
 **R:** Si le bot est arrêté, il ne pourra pas envoyer de rapport. Redémarrez-le et il reprendra le cycle normal. Le prochain rapport sera envoyé à l'heure configurée le jour suivant.
 
+**Q: Comment vérifier que la logique fonctionne ?**  
+**R:** Exécutez le script de vérification :
+```bash
+python verify_daily_reports.py
+```
+Ce script teste la logique du scheduler et confirme que les rapports seront bien envoyés quotidiennement.
+
 ---
 
 ## 🛡️ Gestion des Risques
