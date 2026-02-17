@@ -35,6 +35,11 @@ BOT_TOKEN = _load_token()
 CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "telegram_config.json")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# ═══ TELEGRAM RATE LIMITS ═══
+# Telegram API limits: 30 messages/second across all users, 1 message/second per user
+RATE_LIMIT_DELAY_SAME_USER = 1.2  # Seconds between messages to the same user (slightly above 1s for safety)
+RATE_LIMIT_DELAY_DIFFERENT_USERS = 0.1  # Seconds between messages to different users
+
 # ═══ LOGGING ═══
 logging.basicConfig(
     level=logging.INFO,
@@ -454,7 +459,7 @@ async def cmd_rapport(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(msg, parse_mode='HTML')
             # Respect Telegram rate limits: 1 message/second per user
             if i < len(messages) - 1:
-                await asyncio.sleep(1.2)
+                await asyncio.sleep(RATE_LIMIT_DELAY_SAME_USER)
     except Exception as e:
         log.error(f"❌ Erreur cmd_rapport: {e}")
         log.error(f"📝 Détails: {traceback.format_exc()}")
@@ -487,7 +492,7 @@ async def cmd_single_horizon(update: Update, context: ContextTypes.DEFAULT_TYPE,
                 await update.message.reply_text(p, parse_mode='HTML')
                 # Respect Telegram rate limits: 1 message/second per user
                 if i < len(parts) - 1:
-                    await asyncio.sleep(1.2)
+                    await asyncio.sleep(RATE_LIMIT_DELAY_SAME_USER)
     except Exception as e:
         log.error(f"❌ Erreur cmd_single_horizon: {e}")
         log.error(f"📝 Détails: {traceback.format_exc()}")
@@ -614,7 +619,7 @@ async def envoyer_rapport_planifie(app: Application):
                         chat_id=cid, text=msg, parse_mode='HTML')
                     # Respect Telegram rate limits: 1 message/second per user
                     if i < len(messages) - 1:
-                        await asyncio.sleep(1.2)
+                        await asyncio.sleep(RATE_LIMIT_DELAY_SAME_USER)
                 log.info(f"   ✅ Envoyé à {cid}")
             except Exception as e:
                 log.error(f"   ❌ Erreur envoi à {cid}: {e}")
@@ -666,7 +671,7 @@ async def scheduler_loop(app: Application):
                                 parse_mode='HTML')
                             # Respect Telegram rate limits between users
                             if i < len(chat_ids) - 1:
-                                await asyncio.sleep(0.1)
+                                await asyncio.sleep(RATE_LIMIT_DELAY_DIFFERENT_USERS)
                         except Exception as e:
                             log.error(f"❌ Erreur notification début retrain à {cid}: {e}")
 
@@ -680,7 +685,7 @@ async def scheduler_loop(app: Application):
                                 chat_id=cid, text=summary, parse_mode='HTML')
                             # Respect Telegram rate limits between users
                             if i < len(chat_ids) - 1:
-                                await asyncio.sleep(0.1)
+                                await asyncio.sleep(RATE_LIMIT_DELAY_DIFFERENT_USERS)
                         except Exception as e:
                             log.error(f"❌ Erreur notification fin retrain à {cid}: {e}")
 
