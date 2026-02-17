@@ -34,6 +34,17 @@
 
 ---
 
+> ## 📬 OUI, LE BOT ENVOIE DES RAPPORTS CHAQUE JOUR !
+> 
+> Le bot Telegram envoie **automatiquement** un rapport complet tous les jours à 8h00 (configurable).  
+> ✅ **30 signaux** (Top 10 × 3 horizons : Investisseur, Scalp, Swing)  
+> ✅ **Entièrement automatique** — lancez une fois, recevez tous les jours  
+> ✅ **Abonnement simple** — envoyez `/start` au bot
+> 
+> 👉 [Voir la section Bot Telegram](#-bot-telegram) pour plus de détails
+
+---
+
 ## 🆕 Nouveautés v10.1
 
 - 🌐 **Dashboard Web Streamlit** — Interface interactive complète
@@ -371,6 +382,8 @@ Le système ajuste **automatiquement** tous les calculs (ML, PPO, indicateurs, S
 
 ## 🤖 Bot Telegram
 
+> **📬 RAPPORTS AUTOMATIQUES QUOTIDIENS** : Le bot envoie automatiquement un rapport complet chaque jour à 8h00 (configurable). Il suffit de lancer le bot une fois et de s'abonner avec `/start` !
+
 ### Configuration
 
 1. Créez un bot via [@BotFather](https://t.me/BotFather)
@@ -403,6 +416,32 @@ Chaque jour à l'heure configurée (défaut 08:00), le bot envoie automatiquemen
 - 🔄 **Top 10 Swing** — Moyen terme, tendance
 
 Chaque signal inclut : Score, Ratio R:R, EV%, Stop-Loss, Take-Profit, Kelly%, Risk Score.
+
+### ❓ FAQ — Rapports Quotidiens
+
+**Q: Est-ce que le bot envoie des rapports chaque jour ?**  
+**R: OUI** ✅ — Le bot envoie automatiquement un rapport complet tous les jours à l'heure configurée (par défaut 08:00).
+
+**Q: Comment fonctionne l'envoi automatique ?**  
+**R:** Une fois que vous lancez le bot avec `python telegram_bot.py`, il reste actif en arrière-plan et vérifie l'heure toutes les 30 secondes. Lorsque l'heure du rapport est atteinte, il génère et envoie automatiquement le rapport à tous les abonnés.
+
+**Q: Comment s'abonner aux rapports quotidiens ?**  
+**R:** Envoyez simplement `/start` au bot. Votre chat ID sera automatiquement enregistré et vous recevrez tous les rapports quotidiens.
+
+**Q: Puis-je changer l'heure du rapport ?**  
+**R:** Oui, utilisez la commande `/heure HH:MM`. Par exemple : `/heure 09:30` pour recevoir le rapport à 9h30.
+
+**Q: Que contient le rapport quotidien ?**  
+**R:** Le rapport inclut 3 sections avec 10 titres chacune (30 signaux au total) :
+- 📈 Top 10 **INVESTISSEUR** (horizon 1 an)
+- ⚡ Top 10 **SCALP/INTRADAY** (horizon court terme)
+- 🔄 Top 10 **SWING** (horizon moyen terme)
+
+**Q: Le bot doit-il rester actif en permanence ?**  
+**R:** Oui, pour envoyer les rapports quotidiens, le processus `telegram_bot.py` doit rester en exécution 24/7. Utilisez Docker ou un service comme systemd/supervisor pour le maintenir actif.
+
+**Q: Que se passe-t-il si le bot est arrêté ?**  
+**R:** Si le bot est arrêté, il ne pourra pas envoyer de rapport. Redémarrez-le et il reprendra le cycle normal. Le prochain rapport sera envoyé à l'heure configurée le jour suivant.
 
 ---
 
