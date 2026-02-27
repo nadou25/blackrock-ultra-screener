@@ -432,6 +432,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"🆔 Chat ID: <code>{chat_id}</code>\n\n"
         f"📌 <b>Commandes</b> :\n"
         f"/rapport — Rapport complet immédiat\n"
+        f"/envoyer — Envoyer le rapport à tous les abonnés\n"
         f"/investisseur — Top 10 Investisseur\n"
         f"/scalp — Top 10 Scalp/Intraday\n"
         f"/swing — Top 10 Swing\n"
@@ -542,6 +543,29 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"🆔 Votre ID: <code>{chat_id}</code>",
         parse_mode='HTML'
     )
+
+
+async def cmd_envoyer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Commande /envoyer — envoie immédiatement le rapport à TOUS les abonnés."""
+    chat_id = update.effective_chat.id
+    _enregistrer_chat(chat_id)
+    cfg = charger_config()
+    nb = len(cfg.get("chat_ids", []))
+
+    await update.message.reply_text(
+        f"📤 <b>Envoi immédiat du rapport à {nb} abonné(s)...</b>\n"
+        f"⏳ Génération en cours (2-5 min).",
+        parse_mode='HTML'
+    )
+    try:
+        await envoyer_rapport_planifie(context.application)
+        nb_after = len(charger_config().get("chat_ids", []))
+        await update.message.reply_text(
+            f"✅ Rapport envoyé à <b>{nb_after}</b> abonné(s) !",
+            parse_mode='HTML'
+        )
+    except Exception as e:
+        await update.message.reply_text(f"❌ Erreur envoi: {e}")
 
 
 async def cmd_heure(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -714,6 +738,7 @@ def main():
     # Commandes
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("rapport", cmd_rapport))
+    app.add_handler(CommandHandler("envoyer", cmd_envoyer))
     app.add_handler(CommandHandler("investisseur", cmd_investisseur))
     app.add_handler(CommandHandler("scalp", cmd_scalp))
     app.add_handler(CommandHandler("swing", cmd_swing))
