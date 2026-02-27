@@ -431,6 +431,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"📅 Dernier training: {last_retrain}\n\n"
         f"🆔 Chat ID: <code>{chat_id}</code>\n\n"
         f"📌 <b>Commandes</b> :\n"
+        f"/test — Tester la connexion Telegram\n"
         f"/rapport — Rapport complet immédiat\n"
         f"/envoyer — Envoyer le rapport à tous les abonnés\n"
         f"/investisseur — Top 10 Investisseur\n"
@@ -543,6 +544,47 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"🆔 Votre ID: <code>{chat_id}</code>",
         parse_mode='HTML'
     )
+
+
+def _token_masque():
+    """Retourne le token masqué pour affichage sécurisé (ex: 1234567890:AB***XYZ)."""
+    if not BOT_TOKEN:
+        return "❌ NON CONFIGURÉ"
+    parts = BOT_TOKEN.split(":", 1)
+    if len(parts) == 2 and len(parts[1]) >= 3:
+        return f"{parts[0]}:{'*' * (len(parts[1]) - 3)}{parts[1][-3:]}"
+    if len(BOT_TOKEN) >= 4:
+        return f"{'*' * (len(BOT_TOKEN) - 4)}{BOT_TOKEN[-4:]}"
+    return "****"
+
+
+def _token_source():
+    """Retourne la source du token (variable d'env ou fichier .env)."""
+    return "variable d'environnement" if os.environ.get("TELEGRAM_BOT_TOKEN") else "fichier .env"
+
+
+async def cmd_test(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Commande /test — vérifie le token et envoie un message de test immédiatement."""
+    chat_id = update.effective_chat.id
+    _enregistrer_chat(chat_id)
+
+    token_ok = bool(BOT_TOKEN and len(BOT_TOKEN) >= 30)
+    now_str = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+
+    await update.message.reply_text(
+        f"🧪 <b>TEST DE CONNEXION TELEGRAM</b>\n"
+        f"{'─' * 32}\n"
+        f"🔑 Token chargé : {'✅ OUI' if token_ok else '❌ NON'}\n"
+        f"📂 Source : {_token_source() if token_ok else 'introuvable'}\n"
+        f"🔒 Token (masqué) : <code>{_token_masque()}</code>\n"
+        f"🤖 Bot : @nadououbot\n"
+        f"🆔 Votre chat_id : <code>{chat_id}</code>\n"
+        f"📅 Heure : {now_str}\n"
+        f"{'─' * 32}\n"
+        f"✅ <b>Connexion OK — le bot fonctionne !</b>",
+        parse_mode='HTML'
+    )
+    log.info(f"✅ /test réussi pour chat_id {chat_id}")
 
 
 async def cmd_envoyer(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -721,8 +763,14 @@ def main():
 
     # Vérifier le token
     if not BOT_TOKEN or len(BOT_TOKEN) < 30:
-        print("❌ Token Telegram invalide!")
+        print("❌ Token Telegram invalide ou non configuré!")
+        print("   → Définissez TELEGRAM_BOT_TOKEN dans votre fichier .env")
+        print("   → Ou via la variable d'environnement TELEGRAM_BOT_TOKEN")
         return
+
+    token_src = _token_source()
+    print(f"🔑 Token chargé depuis: {token_src}")
+    print(f"🔒 Token (masqué): {_token_masque()}")
 
     cfg = charger_config()
     print(f"⏰ Heure du rapport: {cfg.get('heure_rapport', '08:00')}")
@@ -737,6 +785,7 @@ def main():
 
     # Commandes
     app.add_handler(CommandHandler("start", cmd_start))
+    app.add_handler(CommandHandler("test", cmd_test))
     app.add_handler(CommandHandler("rapport", cmd_rapport))
     app.add_handler(CommandHandler("envoyer", cmd_envoyer))
     app.add_handler(CommandHandler("investisseur", cmd_investisseur))
