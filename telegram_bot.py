@@ -250,15 +250,19 @@ def format_stock_line(rank, r):
     var_mc = r.get('var_montecarlo_pct', 0) or 0
 
     # Emoji décision
-    if 'FORT' in str(decision).upper() and 'ACHET' in str(decision).upper():
+    d_up = str(decision).upper()
+    is_buy = 'ACHAT' in d_up or 'ACHET' in d_up
+    is_sell = 'VEND' in d_up or 'VENTE' in d_up
+    is_strong = 'FORT' in d_up
+    if is_strong and is_buy:
         emoji = '🟢🟢'
-    elif 'ACHET' in str(decision).upper():
+    elif is_buy:
         emoji = '🟢'
-    elif 'SURVEILL' in str(decision).upper():
+    elif 'SURVEILL' in d_up:
         emoji = '🟡'
-    elif 'FORT' in str(decision).upper() and 'VEND' in str(decision).upper():
+    elif is_strong and is_sell:
         emoji = '🔴🔴'
-    elif 'VEND' in str(decision).upper():
+    elif is_sell:
         emoji = '🔴'
     else:
         emoji = '⚪'
@@ -702,9 +706,9 @@ def main():
 
     cfg = charger_config()
     print(f"⏰ Heure du rapport: {cfg.get('heure_rapport', '08:00')}")
-    print(f"� Retrain tous les: {cfg.get('retrain_interval_days', 7)}j")
+    print(f"🔄 Retrain tous les: {cfg.get('retrain_interval_days', 7)}j")
     print(f"📅 Dernier retrain: {cfg.get('last_retrain_date', 'Jamais')}")
-    print(f"�👥 Abonnés: {len(cfg.get('chat_ids', []))}")
+    print(f"👥 Abonnés: {len(cfg.get('chat_ids', []))}")
     print(f"📌 Envoyez /start à @nadououbot pour vous abonner")
     print()
 

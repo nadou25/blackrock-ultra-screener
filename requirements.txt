@@ -14,3 +14,4 @@ schedule>=1.2.0
 streamlit>=1.30.0
 plotly>=5.18.0
 scipy>=1.10.0
+pytest-asyncio>=0.23.0
