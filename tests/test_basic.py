@@ -90,11 +90,11 @@ class TestIndicators:
         prices = pd.Series(100 + np.cumsum(np.random.randn(100)))
         
         indic = screener.Indicateurs()
-        rsi = indic.rsi(prices, 14)
+        rsi_series = indic.rsi_series(prices, 14)
         
         # RSI doit être dans [0, 100]
-        assert rsi.dropna().min() >= 0
-        assert rsi.dropna().max() <= 100
+        assert rsi_series.dropna().min() >= 0
+        assert rsi_series.dropna().max() <= 100
 
 
 if __name__ == "__main__":

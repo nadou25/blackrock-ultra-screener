@@ -46,6 +46,10 @@ jobs:
           python -m py_compile stock_screener_ultra_v10.py
           python -m py_compile telegram_bot.py
 
+      - name: Run tests
+        run: |
+          pytest tests/ -v
+
   security:
     runs-on: ubuntu-latest
     steps:
