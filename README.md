@@ -10,6 +10,10 @@
 <h3 align="center">Système de Screening Quantitatif Multi-Factoriel — Style Aladdin</h3>
 
 <p align="center">
+  <a href="README.ar.md">🌐 اقرأ هذا الملف بالعربية</a>
+</p>
+
+<p align="center">
   <i>Screener d'actions professionnel combinant analyse quantitative avancée, Machine Learning (13 modèles ensemble), Reinforcement Learning (PPO), gestion des risques institutionnelle, et reporting automatisé via Telegram.</i>
 </p>
 
